@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+label , input {
+    display: block;
+}
+
+form , label {
+    margin-top: 20px;
+    margin-left: 20px;
+    margin-bottom: 20px;
+}
+</style>
+</head>
+<body>
+
+            <h1>Register</h1>
+            <form action="/submit"  enctype="multipart/form-data" method="POST">
+
+                <label for="name">First Name
+                       <input type="text" name="Fname" required>
+                </label>
+                <label for="name">Last Name
+                    <input type="text" name="Lname" required>
+               </label>
+                   <label for="email">Email
+                       <input type="email" name="email" required>
+                   </label>
+                   <label for="pwd">Password
+                       <input type="password"  name="password" required>
+                   </label>
+
+                        <label for="gender">Male
+                        <input type="radio" name="gender" value="male" checked>
+                        </label>
+                        <label for="gender">Female
+                        <input type="radio" name="gender" value="female">
+                        </label>
+                    <label for="image">Image
+                        <input type="file"
+                               id="image" name="image"
+                               accept="image/png, image/jpeg">
+                    </label>
+                    <label for="button">
+                        <input type="submit" value="Register">
+                    </label>
+            </form>
+
+    
+</body>
+</html>

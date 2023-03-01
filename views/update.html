@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <meta charset="UTF-8">
+    <title>Title</title>
+  <style>
+    body{
+      text-align: center;
+      padding: 50px;
+    }
+  </style>
+</head>
+<body>
+<form action="/updateInfo" enctype="multipart/form-data" method="POST">
+  <div class="form-row">
+    <div class="form-group col-md-6">
+      <label for="inputEmail4">First Name</label>
+      <input type="text" class="form-control" id="inputEmail4" name="fname" value="{{.FirstName}}">
+    </div>
+    <div class="form-group col-md-6">
+      <label for="inputPassword4">Last Name</label>
+      <input type="text" class="form-control" id="inputPassword4"  name="lname" value="{{.LastName}}">
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group col-md-6">
+      <label for="inputEmail4">Email</label>
+      <input type="email" class="form-control" id="inputEmail4" name="email" value="{{.Email}}" readonly>
+    </div>
+    <div class="form-group col-md-6">
+      <label for="inputPassword4">Password</label>
+      <input type="password" class="form-control" id="inputPassword4"  name="password"  placeholder="Type Your Password" required>
+    </div>
+  </div>
+
+
+  <button type="submit" class="btn btn-primary" value="Update">Update</button>
+</form>
+</body>
+</html>
