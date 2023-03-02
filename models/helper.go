@@ -46,7 +46,7 @@ func (user *User) Insert() {
 func InsertToken(token *User) {
 	opts := options.Update().SetUpsert(true)
 	filter := bson.D{{"_id", token.Email}}
-	update := bson.D{{"$set", bson.D{{"token", token.JWT}}}}
+	update := bson.D{{"$set", bson.D{{"jwt", token.JWT}}}}
 	collection.UpdateOne(context.TODO(), filter, update, opts)
 
 }
@@ -54,6 +54,13 @@ func Update(user *User) {
 	opts := options.Update().SetUpsert(true)
 	filter := bson.D{{"_id", user.Email}}
 	update := bson.D{{"$set", bson.D{{"firstname", user.FirstName}, {"lastname", user.LastName}, {"password", user.Password}}}}
+	result, _ := collection.UpdateOne(context.TODO(), filter, update, opts)
+	fmt.Println(result)
+}
+func UpdateBalance(user *User) {
+	opts := options.Update().SetUpsert(true)
+	filter := bson.D{{"_id", user.Email}}
+	update := bson.D{{"$set", bson.D{{"balance", user.Balance}}}}
 	result, _ := collection.UpdateOne(context.TODO(), filter, update, opts)
 	fmt.Println(result)
 }
@@ -72,6 +79,15 @@ func Find(mail string) *User {
 		fmt.Println("User doesn't Exist")
 	}
 	return &result
+}
+func CheckEmail(mail any) bool {
+	var result User
+	filter := bson.D{{"_id", mail}}
+	err := collection.FindOne(context.Background(), filter).Decode(&result)
+	if err != nil {
+		return false
+	}
+	return true
 }
 
 // block functions

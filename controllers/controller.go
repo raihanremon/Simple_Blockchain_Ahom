@@ -7,10 +7,10 @@ import (
 	"login-project/models"
 	"login-project/tools"
 	"net/http"
+	"strconv"
 	"strings"
 
 	"github.com/golang-jwt/jwt/v4"
-	"github.com/gorilla/mux"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -39,6 +39,7 @@ func RegisterUser(w http.ResponseWriter, r *http.Request) {
 			Gender:    cred.Gender,
 			Password:  password,
 			HasBlock:  false,
+			Balance:   "0",
 		}
 		userData.Insert()
 		w.WriteHeader(http.StatusAccepted)
@@ -174,22 +175,39 @@ func Block(w http.ResponseWriter, r *http.Request) {
 	var input models.BlockGen
 	err := json.NewDecoder(r.Body).Decode(&input)
 	errorHandler(err)
-	//todo Sender data can be retrieved from token value.
-	pathVar := mux.Vars(r)
-	email := pathVar["email"]
-	user := models.Find(email)
+	senderEmail := input.Sender
+	receiverEmail := input.Receiver
+	sender := models.Find(senderEmail)
+	receiver := models.Find(receiverEmail)
 	var block []byte
 	var BlockHash string
-	if user.HasBlock { // if user has block
-		hash := user.LastHash
-		BlockHash, block = tools.CreateBlock(email, input, false, hash)
+	if sender.HasBlock { // if user has block
+		hash := sender.LastHash
+		balance, err1 := strconv.ParseInt(sender.Balance, 10, 64)
+		amount, err2 := strconv.ParseInt(input.Amount, 10, 64)
+		if err1 != nil || err2 != nil {
+			log.Println(err1, err2)
+		}
+		senderBalance := balance - amount
+		//receiverBalance := receiver.Balance + amount
+		sender.Balance = strconv.FormatInt(senderBalance, 10)
+		models.UpdateBalance(sender)
+		BlockHash, block = tools.CreateBlock(senderEmail, input, false, hash)
 	} else { // if user doesn't have block
-		user.HasBlock = true
-		BlockHash, block = tools.CreateBlock(email, input, true, "")
+		sender.HasBlock = true
+		balance, err1 := strconv.ParseInt(sender.Balance, 10, 64)
+		amount, err2 := strconv.ParseInt(input.Amount, 10, 64)
+		if err1 != nil || err2 != nil {
+			log.Println(err1, err2)
+		}
+		newBalance := balance + amount
+		receiver.Balance = strconv.FormatInt(newBalance, 10)
+		models.UpdateBalance(receiver)
+		BlockHash, block = tools.CreateBlock(senderEmail, input, true, "")
 	}
 	// saving the last block's sha256 code to user database.
-	user.LastHash = BlockHash
-	models.UpdateBlockStatus(user)
+	sender.LastHash = BlockHash
+	models.UpdateBlockStatus(sender)
 	w.Write(block)
 	defer r.Body.Close()
 
@@ -224,12 +242,26 @@ func ShowBlocks(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 }
 
-func Middleware(h http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		log.Println("middleware", r.URL)
-		fmt.Println("HI")
-		h.ServeHTTP(w, r)
-	})
+func CheckReceiver(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	//var receiverEmail models.EmailStruct
+	var receiverEmail map[string]string
+	err := json.NewDecoder(r.Body).Decode(&receiverEmail)
+	if err != nil {
+		log.Println("Error in Check receiver : ", err.Error())
+	}
+	//fmt.Println(json.NewDecoder(r.Body).Decode(&receiverEmail))
+	defer r.Body.Close()
+	fmt.Println(receiverEmail)
+	var exists bool
+	var result string
+	for _, v := range receiverEmail {
+		result = v
+	}
+	fmt.Println(result)
+	exists = models.CheckEmail(result)
+	response := models.ReceiverExistsResponse{Exists: exists}
+	json.NewEncoder(w).Encode(response)
 }
 
 //

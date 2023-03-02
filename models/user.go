@@ -9,6 +9,7 @@ type User struct {
 	Gender    string `json:"gender"`
 	Password  []byte `json:"password"`
 	JWT       string
+	Balance   string `json:"balance"`
 	HasBlock  bool   `json:"hasBlock" bson:"has_block"`
 	LastHash  string `json:"genesisHash" bson:"genesis_hash"`
 }
@@ -27,7 +28,7 @@ type BlockData struct {
 	TransactionData []byte `json:"transaction_data" bson:"transactionData"`
 }
 
-// for API
+// Credentials for API
 type Credentials struct {
 	FirstName string `json:"first_name"`
 	LastName  string `json:"last_name"`
@@ -46,6 +47,7 @@ type EmailStruct struct {
 	Email string `json:"email"`
 }
 type BlockGen struct {
+	Sender   string `json:"sender"`
 	Receiver string `json:"receiver"`
 	Amount   string `json:"amount"`
 }
@@ -55,6 +57,10 @@ type CheckDifficulty struct {
 	Receiver  string
 	Amount    int64
 	TimeStamp time.Time
+}
+
+type ReceiverExistsResponse struct {
+	Exists bool `json:"exists"`
 }
 
 // todo email can be converted to bson _id to make it unique key

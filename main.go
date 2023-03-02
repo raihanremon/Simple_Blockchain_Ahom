@@ -22,10 +22,11 @@ func main() {
 	router.HandleFunc("/api/update", controllers.Update)
 	router.HandleFunc("/api/updateInfo", controllers.UpdateInfo).Methods("POST")
 
-	router.HandleFunc("/api/block/{email}", controllers.Block)
+	router.HandleFunc("/api/block", controllers.Block)
 	router.HandleFunc("/api/decode", controllers.DecodeHash)
 
 	router.HandleFunc("/api/search/{email}", controllers.ShowBlocks)
+	router.HandleFunc("/api/checkReceiver", controllers.CheckReceiver)
 	//log.Fatal(http.ListenAndServe(":8080", handlers.CORS(
 	//	handlers.AllowedOrigins([]string{"*"}),
 	//	handlers.AllowCredentials(),
