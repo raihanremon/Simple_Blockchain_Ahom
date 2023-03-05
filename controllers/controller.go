@@ -204,13 +204,14 @@ func Block(w http.ResponseWriter, r *http.Request) {
 	var BlockHash string
 	// if user has block
 	hash := sender.LastHash
-	balance, err1 := strconv.ParseInt(sender.Balance, 10, 64)
+	senderBalance, err1 := strconv.ParseInt(sender.Balance, 10, 64)
+	receiverBalance, err1 := strconv.ParseInt(receiver.Balance, 10, 64)
 	amount, err2 := strconv.ParseInt(input.Amount, 10, 64)
 	if err1 != nil || err2 != nil {
 		log.Println(err1, err2)
 	}
-	senderBalance := balance - amount
-	receiverBalance := balance + amount
+	senderBalance = senderBalance - amount
+	receiverBalance = receiverBalance + amount
 	sender.Balance = strconv.FormatInt(senderBalance, 10)
 	receiver.Balance = strconv.FormatInt(receiverBalance, 10)
 	models.UpdateBalance(sender)
@@ -277,8 +278,9 @@ func CheckReceiver(w http.ResponseWriter, r *http.Request) {
 }
 
 func FetchHash(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("Hashes sent")
 	result := models.AllHash()
-	data, _ := json.Marshal(result)
+	data, _ := json.Marshal(&result)
 	w.Write(data)
 }
 

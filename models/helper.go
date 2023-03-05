@@ -159,14 +159,28 @@ func FindBlockData(hash string) *BlockData {
 	return &result
 }
 
-func AllHash() []interface{} {
-	var result []interface{}
-	fieldName := "hash"
-	result, err := collection2.Distinct(context.Background(), fieldName, nil)
+func AllHash() *Hashes {
+	filter := bson.M{"hash": bson.M{"$exists": true}}
+	cur, err := collection2.Find(context.Background(), filter)
 	if err != nil {
-		fmt.Println("Failed to retrieve data:", err)
+		log.Println("error in finding:", err)
 	}
-	return result
+	defer cur.Close(context.Background())
+
+	var hashes []interface{}
+	for cur.Next(context.Background()) {
+		var result bson.M
+		if err := cur.Decode(&result); err != nil {
+			log.Println("error in decoding")
+		}
+		hashes = append(hashes, result["hash"])
+	}
+
+	if err := cur.Err(); err != nil {
+		log.Println("cursor error", err)
+	}
+
+	return &Hashes{AllHash: hashes}
 }
 
 /*

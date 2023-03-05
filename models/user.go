@@ -66,5 +66,9 @@ type ReceiverExistsResponse struct {
 	Exists bool `json:"exists"`
 }
 
+type Hashes struct {
+	AllHash []interface{} `json:"hashes"`
+}
+
 // todo email can be converted to bson _id to make it unique key
 // todo there can be added role int which can control user access
