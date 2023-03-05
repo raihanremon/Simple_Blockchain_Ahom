@@ -51,7 +51,10 @@ type BlockGen struct {
 	Receiver string `json:"receiver"`
 	Amount   string `json:"amount"`
 }
-
+type Admin struct {
+	Balance uint   `json:"balance"`
+	Address string `json:"address"`
+}
 type CheckDifficulty struct {
 	Sender    string
 	Receiver  string

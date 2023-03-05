@@ -16,10 +16,13 @@ const (
 	dbName           = "miniBlockchain"
 	collectionName   = "user"
 	collectionName2  = "UserBlock"
+	//collectionName3  = "admin"
 )
 
 var collection *mongo.Collection
 var collection2 *mongo.Collection
+
+//var collection3 *mongo.Collection
 
 func init() {
 
@@ -34,6 +37,7 @@ func init() {
 	fmt.Println("mongodb connection successful")
 	collection = client.Database(dbName).Collection(collectionName)
 	collection2 = client.Database(dbName).Collection(collectionName2)
+	//collection3 = client.Database(dbName).Collection(collectionName3)
 	fmt.Printf("Collection1 : %v \n Collection2 : %v \n", collection, collection2)
 }
 func (user *User) Insert() {
@@ -64,6 +68,14 @@ func UpdateBalance(user *User) {
 	result, _ := collection.UpdateOne(context.TODO(), filter, update, opts)
 	fmt.Println(result)
 }
+
+//	func UpdateAdminBalance(admin *Admin) {
+//		opts := options.Update().SetUpsert(true)
+//		filter := bson.D{{"_id", admin.Address}}
+//		update := bson.D{{"$set", bson.D{{"balance", admin.Balance}}}}
+//		result, _ := collection.UpdateOne(context.TODO(), filter, update, opts)
+//		fmt.Println(result)
+//	}
 func UpdateBlockStatus(user *User) {
 	opts := options.Update().SetUpsert(true)
 	filter := bson.D{{"_id", user.Email}}
@@ -71,6 +83,15 @@ func UpdateBlockStatus(user *User) {
 	result, _ := collection.UpdateOne(context.TODO(), filter, update, opts)
 	fmt.Println(result)
 }
+
+//func (admin *Admin) Insert() {
+//	result, err := collection3.InsertOne(context.Background(), &admin)
+//	if err != nil {
+//		log.Fatal(err)
+//	}
+//	fmt.Println(result)
+//}
+
 func Find(mail string) *User {
 	var result User
 	filter := bson.D{{"_id", mail}}
@@ -136,6 +157,16 @@ func FindBlockData(hash string) *BlockData {
 		fmt.Println("Block doesn't Exist")
 	}
 	return &result
+}
+
+func AllHash() []interface{} {
+	var result []interface{}
+	fieldName := "hash"
+	result, err := collection2.Distinct(context.Background(), fieldName, nil)
+	if err != nil {
+		fmt.Println("Failed to retrieve data:", err)
+	}
+	return result
 }
 
 /*

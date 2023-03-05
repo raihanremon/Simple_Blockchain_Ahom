@@ -10,7 +10,11 @@ import (
 	"net/http"
 )
 
-//var store = sessions.NewCookieStore(privateKey)
+//func init() {
+//	admin := tools.Admin()
+//	fmt.Println(admin.Balance, admin.Address)
+//	admin.Insert()
+//}
 
 func main() {
 	router := mux.NewRouter()
@@ -27,12 +31,8 @@ func main() {
 
 	router.HandleFunc("/api/search/{email}", controllers.ShowBlocks)
 	router.HandleFunc("/api/checkReceiver", controllers.CheckReceiver)
-	//log.Fatal(http.ListenAndServe(":8080", handlers.CORS(
-	//	handlers.AllowedOrigins([]string{"*"}),
-	//	handlers.AllowCredentials(),
-	//	handlers.AllowedMethods([]string{"GET", "POST", "PUT", "DELETE", "OPTIONS"}),
-	//	handlers.AllowedHeaders([]string{"Origin, X-Request-With, Accept", "Authorization", "Content-Type"}),
-	//)(router)))
+	//router.HandleFunc("/api/getBalance", controllers.GetBalance)
+	router.HandleFunc("/api/hashes", controllers.FetchHash)
 
 	log.Fatal(http.ListenAndServe(":8080", router))
 

@@ -161,3 +161,23 @@ func simpleDifficulty(diff string) bool {
 	}
 	return true
 }
+
+//func Admin() *models.Admin {
+//	admin := &models.Admin{}
+//	admin.Balance = 100000
+//	admin.Address = "0x13CC9936245c0BBbE89bfF1332D76f3991240C08"
+//	return admin
+//}
+//
+//func User() (*models.User, *models.Admin) {
+//	admin := &models.Admin{}
+//	user := &models.User{}
+//	user.Balance = "100"
+//	admin.Balance -= 100
+//
+//	// print user.UserBalance and admin.Balance values
+//	fmt.Println("User balance:", user.Balance)
+//	fmt.Println("Admin balance:", admin.Balance)
+//
+//	return user, admin
+//}

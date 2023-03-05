@@ -24,7 +24,6 @@ func errorHandler(err error) {
 func RegisterUser(w http.ResponseWriter, r *http.Request) {
 	//fixme empty body can also be registered
 	w.Header().Set("Content-Type", "application/json")
-
 	var cred models.Credentials
 	err := json.NewDecoder(r.Body).Decode(&cred)
 	defer r.Body.Close()
@@ -39,11 +38,32 @@ func RegisterUser(w http.ResponseWriter, r *http.Request) {
 			Gender:    cred.Gender,
 			Password:  password,
 			HasBlock:  false,
-			Balance:   "0",
+			Balance:   "100",
 		}
 		userData.Insert()
 		w.WriteHeader(http.StatusAccepted)
 		w.Write([]byte("Registered Successfully"))
+
+		// Creating block for registered user
+		var input models.BlockGen
+		var BlockHash string
+		senderEmail := userData.Email
+		input.Sender = senderEmail
+		input.Receiver = ""
+		input.Amount = "0"
+		sender := models.Find(senderEmail)
+		sender.HasBlock = true
+		BlockHash, _ = tools.CreateBlock(senderEmail, input, true, "")
+		sender.LastHash = BlockHash
+		models.UpdateBlockStatus(sender)
+
+		//admin := &models.Admin{}
+		//user := &models.User{}
+		//admin.Address = "0x13CC9936245c0BBbE89bfF1332D76f3991240C08"
+		//sender.Balance = "100"
+		//admin.Balance -= 100
+		//models.UpdateBalance(user)
+		//models.UpdateAdminBalance(admin)
 	} else {
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte("Not sufficient information"))
@@ -175,36 +195,28 @@ func Block(w http.ResponseWriter, r *http.Request) {
 	var input models.BlockGen
 	err := json.NewDecoder(r.Body).Decode(&input)
 	errorHandler(err)
+
 	senderEmail := input.Sender
 	receiverEmail := input.Receiver
 	sender := models.Find(senderEmail)
 	receiver := models.Find(receiverEmail)
 	var block []byte
 	var BlockHash string
-	if sender.HasBlock { // if user has block
-		hash := sender.LastHash
-		balance, err1 := strconv.ParseInt(sender.Balance, 10, 64)
-		amount, err2 := strconv.ParseInt(input.Amount, 10, 64)
-		if err1 != nil || err2 != nil {
-			log.Println(err1, err2)
-		}
-		senderBalance := balance - amount
-		//receiverBalance := receiver.Balance + amount
-		sender.Balance = strconv.FormatInt(senderBalance, 10)
-		models.UpdateBalance(sender)
-		BlockHash, block = tools.CreateBlock(senderEmail, input, false, hash)
-	} else { // if user doesn't have block
-		sender.HasBlock = true
-		balance, err1 := strconv.ParseInt(sender.Balance, 10, 64)
-		amount, err2 := strconv.ParseInt(input.Amount, 10, 64)
-		if err1 != nil || err2 != nil {
-			log.Println(err1, err2)
-		}
-		newBalance := balance + amount
-		receiver.Balance = strconv.FormatInt(newBalance, 10)
-		models.UpdateBalance(receiver)
-		BlockHash, block = tools.CreateBlock(senderEmail, input, true, "")
+	// if user has block
+	hash := sender.LastHash
+	balance, err1 := strconv.ParseInt(sender.Balance, 10, 64)
+	amount, err2 := strconv.ParseInt(input.Amount, 10, 64)
+	if err1 != nil || err2 != nil {
+		log.Println(err1, err2)
 	}
+	senderBalance := balance - amount
+	receiverBalance := balance + amount
+	sender.Balance = strconv.FormatInt(senderBalance, 10)
+	receiver.Balance = strconv.FormatInt(receiverBalance, 10)
+	models.UpdateBalance(sender)
+	models.UpdateBalance(receiver)
+	BlockHash, block = tools.CreateBlock(senderEmail, input, false, hash)
+
 	// saving the last block's sha256 code to user database.
 	sender.LastHash = BlockHash
 	models.UpdateBlockStatus(sender)
@@ -263,5 +275,13 @@ func CheckReceiver(w http.ResponseWriter, r *http.Request) {
 	response := models.ReceiverExistsResponse{Exists: exists}
 	json.NewEncoder(w).Encode(response)
 }
+
+func FetchHash(w http.ResponseWriter, r *http.Request) {
+	result := models.AllHash()
+	data, _ := json.Marshal(result)
+	w.Write(data)
+}
+
+//func GetBalance(w http.ResponseWriter, r *http.Request){}
 
 //
