@@ -11,11 +11,14 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
+//testuser2
+//3sYW1qEGCEMk7itm
+
 const (
-	connectionString = "mongodb://localhost:27017/"
+	connectionString = "mongodb+srv://testuser2:3sYW1qEGCEMk7itm@raihan-cluster-01.vid31.mongodb.net/?retryWrites=true&w=majority"
 	dbName           = "miniBlockchain"
 	collectionName   = "user"
-	collectionName2  = "UserBlock"
+	collectionName2  = "userBlock"
 	//collectionName3  = "admin"
 )
 
