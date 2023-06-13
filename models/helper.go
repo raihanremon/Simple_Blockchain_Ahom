@@ -15,7 +15,7 @@ import (
 //3sYW1qEGCEMk7itm
 
 const (
-	connectionString = "mongodb+srv://testuser2:3sYW1qEGCEMk7itm@raihan-cluster-01.vid31.mongodb.net/?retryWrites=true&w=majority"
+	connectionString = "mongodb+srv://testuser2:UDKYmbMQxggQr7rO@raihan-cluster-01.vid31.mongodb.net/?retryWrites=true&w=majority"
 	dbName           = "miniBlockchain"
 	collectionName   = "user"
 	collectionName2  = "userBlock"

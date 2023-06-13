@@ -13,7 +13,7 @@
       <synchronize>true</synchronize>
       <configured-by-url>true</configured-by-url>
       <jdbc-driver>com.dbschema.MongoJdbcDriver</jdbc-driver>
-      <jdbc-url>mongodb+srv://testuser2:3sYW1qEGCEMk7itm@raihan-cluster-01.vid31.mongodb.net/?retryWrites=true&amp;w=majority</jdbc-url>
+      <jdbc-url>mongodb+srv://testuser2:UDKYmbMQxggQr7rO@raihan-cluster-01.vid31.mongodb.net/?retryWrites=true&amp;w=majority</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
   </component>
